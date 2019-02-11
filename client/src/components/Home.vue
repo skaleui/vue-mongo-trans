@@ -14,14 +14,6 @@
             row
             align-center
           >
-            <v-flex xs6>
-              <v-subheader v-if="item.heading">
-                {{ item.heading }}
-              </v-subheader>
-            </v-flex>
-            <v-flex xs6 class="text-xs-center">
-              <a href="#!" class="body-2 black--text">EDIT</a>
-            </v-flex>
           </v-layout>
           <v-list-group
             v-else-if="item.children"
@@ -51,7 +43,7 @@
               </v-list-tile-content>
             </v-list-tile>
           </v-list-group>
-          <v-list-tile v-else :key="item.text">
+          <v-list-tile v-else :key="item.text" v-on:click="showAction(item)">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -103,11 +95,11 @@
     <v-content>
       <v-container fluid>
         <v-layout>
-          <transactions></transactions>
+          <transactions :set-dialog="setDialogVal"></transactions>
         </v-layout>
       </v-container>
     </v-content>
-    <edit-transaction></edit-transaction>
+    <edit-transaction :showdialog="dialog" :set-dialog="setDialogVal"></edit-transaction>
   </div>
 </template>
 
@@ -143,13 +135,17 @@ export default {
   props: {
     source: String
   },
-
   methods: {
-    menuAction: function () {
-      // TODO
+    showAction: function (item) {
+      if (item.text === 'Add Transaction') {
+        this.dialog = true
+        console.log('showAction::dialog', this.dialog)
+        this.setDialogVal({'show': true, item: {}})
+      }
     },
-    showProfile: function () {
-      console.log('show profile clicked')
+    setDialogVal: function (value) {
+      console.log('Home::setDialogVal', value)
+      this.dialog = value
     }
   },
   mounted: function () {

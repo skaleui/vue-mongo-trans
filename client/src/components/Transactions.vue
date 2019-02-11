@@ -31,6 +31,9 @@
       <template slot="items" slot-scope="props">
         <tr>
           <td>
+           <v-icon @click="editCurrentTransaction(props.item)">edit</v-icon>
+          </td>
+          <td>
             <v-edit-dialog
               lazy
             > {{props.item.transactionDate }}
@@ -42,7 +45,18 @@
               ></v-text-field>
             </v-edit-dialog>
           </td>
-          <td class="text-xs-left">{{ props.item.transactionType }}</td>
+          <td class="text-xs-left">
+            <v-edit-dialog
+              lazy>
+            {{ props.item.transactionType }}
+                          <v-text-field
+                slot="input"
+                label="Edit"
+                v-model="props.item.transactionType"
+                single-line
+              ></v-text-field>
+            </v-edit-dialog>
+          </td>
           <td class="text-xs-left" @click="props.expanded = !props.expanded">
             {{ props.item.description }}
           </td>
@@ -73,10 +87,11 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Transactions',
+  props: ['setDialog'],
   computed: {
     ...mapState({
       months: state => state.transactions.months,
-      currentYear: state => state.transactions.currentYear,
+      currentYear: state => state.transactions.currentyear,
       currentMonth: state => state.transactions.currentMonth
     }),
     ...mapGetters({
@@ -89,14 +104,16 @@ export default {
     return {
       max25chars: (v) => v.length <= 25 || 'input too long!',
       search: '',
+      itemval: {},
       pagination: {},
       headers: [
-        { text: 'Date', align: 'center', sortable: false, value: 'date' },
-        { text: 'Type', align: 'center', sortable: false, value: 'type' },
+        { text: 'Edit', align: 'center', sortable: false, value: '' },
+        { text: 'Date', align: 'left', sortable: false, value: 'date' },
+        { text: 'Type', align: 'left', sortable: false, value: 'type' },
         { text: 'Description', align: 'center', sortable: false, value: 'description' },
-        { text: 'Charge (-)', align: 'center', sortable: false, value: 'paymentAmt' },
-        { text: 'Desposit (+)', align: 'center', sortable: false, value: 'despositAmt' },
-        { text: 'Balance', align: 'center', sortable: false, value: 'balance' }
+        { text: 'Charge (-)', align: 'right', sortable: false, value: 'paymentAmt' },
+        { text: 'Desposit (+)', align: 'right', sortable: false, value: 'despositAmt' },
+        { text: 'Balance', align: 'right', sortable: false, value: 'balance' }
       ]
     }
   },
@@ -110,7 +127,7 @@ export default {
     },
     gotoMonth: function (increment) {
       console.log('gotoMonth')
-      this.$store.dispatch('gotoMonth').then(() => {
+      this.$store.dispatch('gotoMonth', increment).then(() => {
         this.getPreviousMonthsBalances()
         this.getTransactionsByMonth()
       })
@@ -121,6 +138,12 @@ export default {
         this.getPreviousMonthsBalances()
         this.getTransactionsByMonth()
       })
+    },
+    editCurrentTransaction: function (item) {
+      console.log('editCurrentTransaction', item)
+      this.itemval = { 'show': true, 'item': item }
+      console.log(this.itemval)
+      this.setDialog(this.itemval)
     }
   },
   mounted: async function () {

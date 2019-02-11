@@ -40,6 +40,7 @@ const actions = {
 
   updateUserProfile ({ commit }, payload) {
     // TODO encrypt the user's password
+    console.log('updateUserprofile', payload)
     Vue.axios.put('/user/' + this.state.user.userId, payload)
       .then((resp) => {
         console.log(resp)

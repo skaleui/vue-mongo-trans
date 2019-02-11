@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run lint & nodemon app.js",
-    "lint": "./node_modules/.bin/eslint **/*.js"
+    "lint": "./node_modules/.bin/eslint \"**/*.js\""
   },
   "keywords": [],
   "author": "Shekhar Kale",
@@ -15,7 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "ipaddr": "0.0.9",
-    "mongoose": "^5.4.1",
+    "mongoose": "^5.4.6",
     "morgan": "^1.9.1"
   },
   "devDependencies": {

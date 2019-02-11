@@ -16,7 +16,7 @@ const state = {
     { name: 'November', abrev: 'Nov', index: 11 },
     { name: 'December', abrev: 'Dec', index: 12 }
   ],
-  currentMonth: 5,
+  currentMonth: 12,
   currentyear: 2018,
   balanceCharges: 0,
   balanceDeposits: 0,
@@ -130,7 +130,7 @@ function mapTransaction (tx, state) {
   const transDate = new Date(tx.transactionDate)
   const months = state.months
   let transaction = {
-    transactionDate: months[transDate.getUTCMonth() + 1].abrev + '-' + transDate.getUTCDate(),
+    transactionDate: transDate.getFullYear() + '-' + months[transDate.getUTCMonth() + 1].abrev + '-' + transDate.getUTCDate(),
     transactionType: tx.transactionType,
     description: tx.description,
     charge: moneyFormatter(tx.charge),

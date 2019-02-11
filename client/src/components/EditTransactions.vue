@@ -7,7 +7,7 @@
       color="orange"
       dark
       fixed
-      @click.stop="showEditTransactionDialog"
+      @click.stop="showDialog"
     >
       <v-icon>add</v-icon>
     </v-btn>
@@ -16,7 +16,7 @@
         <v-card-title
           class="grey lighten-4 py-4 title"
         >
-          New Transaction
+         {{ (this.newItem ? 'New' : 'Edit') + ' Transaction' }}
         </v-card-title>
         <v-container grid-list-sm class="pa-4">
           <v-layout row wrap>
@@ -89,7 +89,7 @@
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="cancelTransaction">Cancel</v-btn>
           <v-btn flat @click="saveTransaction">Save</v-btn>
         </v-card-actions>
       </v-card>
@@ -100,8 +100,30 @@
 <script>
 export default {
   name: 'EditTransaction',
+  props: ['showdialog', 'setDialog'],
+  watch: {
+    showdialog: function (val) {
+      console.log('showdialog', val)
+      if (typeof val !== 'object') {
+        this.transaction.transactionDate = this.getCurrentDate()
+        this.newItem = true
+        this.dialog = val
+      } else {
+        if ((val.item !== null || val.item !== undefined) && Object.keys(val.item).length === 0) {
+          this.transaction = {}
+          this.transaction.transactionDate = this.getCurrentDate()
+          this.newItem = true
+        } else {
+          this.transaction = val.item
+          this.newItem = false
+        }
+        this.dialog = val.show
+      }
+    }
+  },
   data: () => ({
     dialog: false,
+    newItem: true,
     transaction: {
       id: null,
       transactionDate: null,
@@ -125,6 +147,11 @@ export default {
       this.$store.dispatch('saveTransaction', this.transaction)
 
       this.dialog = false
+      this.setDialog(false)
+    },
+    cancelTransaction: function () {
+      this.dialog = false
+      this.setDialog(false)
     },
     showEditTransactionDialog: function () {
       this.transaction.transactionDate = this.getCurrentDate()

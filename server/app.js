@@ -23,7 +23,12 @@ app.use(function (req, res, next) {
 })
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/globalmantics')
+mongoose.connect('mongodb://localhost:27017/globalmantics', { useNewUrlParser: true })
+  .then(() => {
+    console.log('Database connection successful')
+  })
+  .catch((err) => console.log(err))
+
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error'))
 db.once('open', function () {

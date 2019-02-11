@@ -11,7 +11,7 @@ module.exports = function (router) {
 
     console.log(userId)
     const qry = {
-      userId: userId,
+      // userId: userId,
       transactionDate: {
         $gte: startDt,
         $lt: endDt
